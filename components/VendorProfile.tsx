@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Listing, Vendor } from '../types';
 
 interface RightSidebarProps {
     listings: Listing[];
     getVendorById: (id: number) => Vendor | undefined;
+    onCreateBusiness: () => void; // Add prop for creation handler
 }
 
 const PromotedPostCard: React.FC<{ listing: Listing; vendor: Vendor }> = ({ listing, vendor }) => (
@@ -17,7 +19,7 @@ const PromotedPostCard: React.FC<{ listing: Listing; vendor: Vendor }> = ({ list
 );
 
 
-const RightSidebar: React.FC<RightSidebarProps> = ({ listings, getVendorById }) => {
+const RightSidebar: React.FC<RightSidebarProps> = ({ listings, getVendorById, onCreateBusiness }) => {
     // Simulate promoted listings by taking the first few
     const promotedListings = listings.slice(0, 3);
     
@@ -39,10 +41,13 @@ const RightSidebar: React.FC<RightSidebarProps> = ({ listings, getVendorById }) 
                 <div className="p-4">
                     <h3 className="font-bold text-gray-800">¿Tienes un negocio local?</h3>
                     <p className="text-sm text-gray-600 mt-1 mb-3">Crea una página de negocio para conectar con los vecinos/as, publicar novedades y conseguir nuevos clientes.</p>
-                    <a href="#" className="flex justify-between items-center text-sm font-semibold text-green-600 hover:text-green-700">
+                    <button 
+                        onClick={onCreateBusiness}
+                        className="flex justify-between items-center text-sm font-semibold text-green-600 hover:text-green-700 w-full text-left"
+                    >
                         <span>Crear página</span>
                         <span>&gt;</span>
-                    </a>
+                    </button>
                 </div>
             </div>
             

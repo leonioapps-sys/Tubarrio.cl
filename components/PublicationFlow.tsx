@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -7,7 +8,7 @@ import useGeolocation from '../hooks/useGeolocation';
 import { geminiService } from '../services/geminiService';
 import { UploadCloudIcon, MapPinIcon, InfoIcon, SparklesIcon, XIcon, Loader2Icon, LocateFixedIcon } from './Icons';
 
-const LocationPicker: React.FC<{ onLocationSet: (coords: Coordinates) => void; initialCoords?: Coordinates }> = ({ onLocationSet, initialCoords }) => {
+export const LocationPicker: React.FC<{ onLocationSet: (coords: Coordinates) => void; initialCoords?: Coordinates }> = ({ onLocationSet, initialCoords }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
         initialCoords ? [initialCoords.lat, initialCoords.lng] : null
     );
@@ -95,8 +96,15 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         
-        if (name === 'type' && value === ListingType.Barter) {
-            setFormData(prev => ({ ...prev, type: value as ListingType, price: 0 }));
+        if (name === 'type') {
+             const newType = value as ListingType;
+             // Auto-set price to 0 for Barter, Free, LocalBusiness (usually display), Event (sometimes free)
+             // For simplicity, only force 0 on Barter and Free
+             let newPrice = formData.price;
+             if (newType === ListingType.Barter || newType === ListingType.Free) {
+                 newPrice = 0;
+             }
+             setFormData(prev => ({ ...prev, type: newType, price: newPrice }));
         } else {
              setFormData(prev => ({ ...prev, [name]: value }));
         }
@@ -146,6 +154,8 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
         };
         onPublish(listingData);
     };
+
+    const isPriceDisabled = formData.type === ListingType.Barter || formData.type === ListingType.Free;
 
     return (
         <div className="flex-grow flex items-center justify-center p-4 bg-slate-100">
@@ -210,8 +220,8 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                                     value={formData.price} 
                                     onChange={handleInputChange} 
                                     className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 disabled:bg-slate-100 bg-white text-slate-900"
-                                    disabled={formData.type === ListingType.Barter}
-                                    placeholder={formData.type === ListingType.Barter ? 'N/A para Trueques' : 'Ej: 15000'}
+                                    disabled={isPriceDisabled}
+                                    placeholder={isPriceDisabled ? 'Gratis / Intercambio' : 'Ej: 15000'}
                                  />
                             </div>
                         </div>
@@ -259,7 +269,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                             <h4 className="font-semibold mb-2 text-slate-700">Resumen:</h4>
                             <p className="text-slate-600"><strong>Título:</strong> {formData.title}</p>
                             <p className="text-slate-600"><strong>Categoría:</strong> {formData.type}</p>
-                            <p className="text-slate-600"><strong>Precio:</strong> {formData.type === ListingType.Barter ? 'Intercambio' : `$${formData.price}`}</p>
+                            <p className="text-slate-600"><strong>Precio:</strong> {isPriceDisabled ? 'Gratis/Intercambio' : `$${formData.price}`}</p>
                             <p className="text-slate-600"><strong>Ubicación:</strong> {formData.location ? 'Establecida' : 'No establecida'}</p>
                         </div>
                     </div>
