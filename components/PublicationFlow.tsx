@@ -67,7 +67,7 @@ export const LocationPicker: React.FC<{ onLocationSet: (coords: Coordinates) => 
             <button
                 type="button"
                 onClick={handleUseCurrentLocation}
-                className="absolute top-2 right-2 z-[1000] bg-white/80 backdrop-blur-sm text-sky-600 px-3 py-2 text-sm font-semibold rounded-lg shadow-md hover:bg-white flex items-center gap-2 transition-colors"
+                className="absolute top-2 right-2 z-[1000] bg-white/80 backdrop-blur-sm text-emerald-600 px-3 py-2 text-sm font-semibold rounded-lg shadow-md hover:bg-white flex items-center gap-2 transition-colors"
             >
                 <LocateFixedIcon className="w-4 h-4" /> Mi ubicación
             </button>
@@ -88,7 +88,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
         type: ListingType.Product,
         price: 0,
         location: null as Coordinates | null,
-        image: 'https://picsum.photos/seed/newitem/400/300', // Placeholder
+        image: 'https://picsum.photos/seed/newitem/400/300', 
     });
     const [isGenerating, setIsGenerating] = useState(false);
     const [isValidating, setIsValidating] = useState(false);
@@ -99,8 +99,6 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
         
         if (name === 'type') {
              const newType = value as ListingType;
-             // Auto-set price to 0 for Barter, Free, LocalBusiness (usually display), Event (sometimes free)
-             // For simplicity, only force 0 on Barter and Free
              let newPrice = formData.price;
              if (newType === ListingType.Barter || newType === ListingType.Free) {
                  newPrice = 0;
@@ -129,7 +127,6 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
     };
 
     const nextStep = () => {
-        // Validation
         if (step === 1 && (!formData.title || !formData.description)) {
             setError("El título y la descripción son obligatorios.");
             return;
@@ -150,17 +147,14 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
             return;
         }
 
-        // Content Safety Check
         setIsValidating(true);
         setError(null);
         try {
-            // Call Gemini to validate content safety
             const check = await geminiService.validateContentSafety(formData.title, formData.description);
             
             if (!check.isSafe) {
                 setError(`No se puede publicar este aviso: ${check.reason || 'Contenido inapropiado detectado.'}`);
                 setIsValidating(false);
-                // Go back to step 1 to let them edit if needed
                 setStep(1);
                 return;
             }
@@ -187,17 +181,17 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                 <button onClick={onCancel} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                     <XIcon className="w-6 h-6" />
                 </button>
-                <h2 className="text-2xl font-bold text-center mb-2 text-slate-800">Publica en Tubarrio</h2>
+                <h2 className="text-2xl font-bold text-center mb-2 text-slate-800">Publica en NuestroBarrio</h2>
                 <p className="text-center text-slate-500 mb-6">Sigue los pasos para conectar con tu comunidad.</p>
                 
                 {/* Stepper */}
                 <div className="flex justify-center items-center mb-8 shrink-0">
                     {[1, 2, 3].map(s => (
                         <React.Fragment key={s}>
-                            <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-all duration-300 ${step >= s ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-200 text-slate-500'}`}>
+                            <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-all duration-300 ${step >= s ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-200 text-slate-500'}`}>
                                {s}
                             </div>
-                            {s < 3 && <div className={`flex-auto border-t-2 transition-all duration-300 ${step > s ? 'border-sky-500' : 'border-slate-200'}`}></div>}
+                            {s < 3 && <div className={`flex-auto border-t-2 transition-all duration-300 ${step > s ? 'border-emerald-500' : 'border-slate-200'}`}></div>}
                         </React.Fragment>
                     ))}
                 </div>
@@ -213,16 +207,16 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                         </div>
                         <div>
                             <label htmlFor="title" className="block text-sm font-medium text-slate-700 mb-1">Título del anuncio</label>
-                            <input type="text" name="title" id="title" value={formData.title} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-slate-900" />
+                            <input type="text" name="title" id="title" value={formData.title} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-slate-900" />
                         </div>
                         <div>
                             <label htmlFor="description" className="block text-sm font-medium text-slate-700 mb-1">Descripción</label>
-                            <textarea name="description" id="description" rows={4} value={formData.description} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-slate-900"></textarea>
+                            <textarea name="description" id="description" rows={4} value={formData.description} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-slate-900"></textarea>
                             <button
                                 type="button"
                                 onClick={handleGenerateDescription}
                                 disabled={isGenerating}
-                                className="mt-2 flex items-center gap-2 text-sm text-sky-600 font-semibold hover:text-sky-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="mt-2 flex items-center gap-2 text-sm text-emerald-600 font-semibold hover:text-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isGenerating ? <Loader2Icon className="w-4 h-4 animate-spin"/> : <SparklesIcon className="w-4 h-4" />}
                                 {isGenerating ? 'Generando...' : 'Sugerir con IA'}
@@ -231,7 +225,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                  <label htmlFor="type" className="block text-sm font-medium text-slate-700 mb-1">Categoría</label>
-                                 <select name="type" id="type" value={formData.type} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 bg-white text-slate-900">
+                                 <select name="type" id="type" value={formData.type} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-slate-900">
                                      {Object.values(ListingType).map(type => <option key={type} value={type}>{type}</option>)}
                                  </select>
                             </div>
@@ -243,7 +237,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                                     id="price" 
                                     value={formData.price} 
                                     onChange={handleInputChange} 
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-sky-500 focus:border-sky-500 disabled:bg-slate-100 bg-white text-slate-900"
+                                    className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 disabled:bg-slate-100 bg-white text-slate-900"
                                     disabled={isPriceDisabled}
                                     placeholder={isPriceDisabled ? 'Gratis / Intercambio' : 'Ej: 15000'}
                                  />
@@ -289,7 +283,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
                                     <div className="flex text-sm text-slate-600">
-                                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-sky-600 hover:text-sky-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-sky-500">
+                                        <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-emerald-600 hover:text-emerald-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-emerald-500">
                                             <span>Sube un archivo</span>
                                             <input id="file-upload" name="file-upload" type="file" className="sr-only" />
                                         </label>
@@ -314,19 +308,18 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                     </div>
                 )}
 
-
                 {/* Navigation */}
                 <div className="flex justify-between mt-8 shrink-0">
                     {step > 1 ? (
                         <button onClick={prevStep} className="bg-slate-200 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-300 transition-colors">Anterior</button>
                     ) : <div></div>}
                     {step < 3 ? (
-                        <button onClick={nextStep} className="bg-sky-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-600 transition-colors shadow-md">Siguiente</button>
+                        <button onClick={nextStep} className="bg-emerald-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-emerald-700 transition-colors shadow-md">Siguiente</button>
                     ) : (
                         <button 
                             onClick={handleSubmit} 
                             disabled={isValidating}
-                            className="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition-colors shadow-md flex items-center gap-2"
+                            className="bg-emerald-700 text-white font-bold py-2 px-6 rounded-lg hover:bg-emerald-800 transition-colors shadow-md flex items-center gap-2"
                         >
                             {isValidating && <Loader2Icon className="w-4 h-4 animate-spin" />}
                             {isValidating ? 'Analizando...' : (isComplaint ? 'Enviar a Revisión' : 'Publicar Anuncio')}

@@ -31,8 +31,8 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
             break;
         case 'comment':
         case 'reply':
-            icon = <MessageCircleIcon className="w-4 h-4 text-blue-500"/>;
-            bgColor = 'bg-blue-100';
+            icon = <MessageCircleIcon className="w-4 h-4 text-emerald-500"/>;
+            bgColor = 'bg-emerald-100';
             break;
         case 'info':
         default:
@@ -41,7 +41,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
     }
 
     return (
-        <div className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 ${!notification.isRead ? 'bg-green-50/50' : ''}`}>
+        <div className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 ${!notification.isRead ? 'bg-emerald-50/50' : ''}`}>
             <div className="flex gap-3 items-start">
                 <div className={`w-8 h-8 rounded-full ${bgColor} flex items-center justify-center flex-shrink-0`}>
                     {icon}
@@ -51,7 +51,7 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
                     <p className="text-xs text-gray-500 mt-1">{timeAgo(notification.createdAt)}</p>
                 </div>
                 {!notification.isRead && (
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-1"></div>
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mt-1"></div>
                 )}
             </div>
         </div>
@@ -110,20 +110,24 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
             <div className="max-w-[1200px] mx-auto px-4 h-full flex justify-between items-center">
                 {/* Left Side - Logo */}
                 <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                    <svg width="32" height="32" viewBox="0 0 24 24" className="text-green-600" fill="currentColor">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
-                    </svg>
-                    <span className="text-xl font-bold text-gray-800 tracking-tighter">Tubarrio</span>
+                    {/* New Modern Logo */}
+                    <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm">
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                    </div>
+                    <span className="text-xl font-bold text-gray-900 tracking-tight">NuestroBarrio</span>
                 </div>
                 
                 {/* Center - Search */}
                 <div className="relative w-full max-w-md hidden sm:block">
-                     <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
+                     <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                      <input
                         type="text"
                         placeholder="Busca: 'ropa', 'gasfiter', 'pan'..."
                         onChange={(e) => onSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-transparent focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                        className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-full border-transparent focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition text-sm"
                      />
                 </div>
                 
@@ -134,11 +138,11 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                    <div className="relative" ref={messageRef}>
                         <button 
                             onClick={handleMessageClick}
-                            className="text-gray-600 hover:text-gray-900 relative p-1" 
+                            className="text-gray-600 hover:text-emerald-600 transition-colors relative p-1" 
                             aria-label="Messages"
                         >
                             <ChatBubbleIcon className="w-6 h-6"/>
-                            <span className="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">1</span>
+                            <span className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-white">1</span>
                         </button>
 
                          {/* Messages Dropdown */}
@@ -146,11 +150,11 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                            <div className="absolute right-[-40px] sm:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
                                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                    <h3 className="font-bold text-gray-700 text-sm">Chats</h3>
-                                   <span className="text-xs text-blue-600 font-medium cursor-pointer">Marcar leídos</span>
+                                   <span className="text-xs text-emerald-600 font-medium cursor-pointer">Marcar leídos</span>
                                </div>
                                <div className="max-h-80 overflow-y-auto">
                                    {mockMessages.map(msg => (
-                                       <div key={msg.id} className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex gap-3 ${msg.unread ? 'bg-blue-50/30' : ''}`}>
+                                       <div key={msg.id} className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 flex gap-3 ${msg.unread ? 'bg-emerald-50/30' : ''}`}>
                                             <img src={msg.avatar} className="w-10 h-10 rounded-full object-cover" alt={msg.user} />
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex justify-between">
@@ -159,12 +163,12 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                                                 </div>
                                                 <p className={`text-sm truncate ${msg.unread ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{msg.lastMessage}</p>
                                             </div>
-                                            {msg.unread && <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>}
+                                            {msg.unread && <div className="w-2 h-2 bg-emerald-600 rounded-full mt-2"></div>}
                                        </div>
                                    ))}
                                </div>
                                <div className="p-2 text-center border-t border-gray-100">
-                                   <button className="text-xs font-semibold text-blue-600 hover:underline">Ver todos los mensajes</button>
+                                   <button className="text-xs font-semibold text-emerald-600 hover:underline">Ver todos los mensajes</button>
                                </div>
                            </div>
                        )}
@@ -174,7 +178,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                    <div className="relative" ref={notifRef}>
                        <button 
                             onClick={handleNotificationClick}
-                            className="text-gray-600 hover:text-gray-900 relative p-1" 
+                            className="text-gray-600 hover:text-emerald-600 transition-colors relative p-1" 
                             aria-label="Notifications"
                         >
                             <BellIcon className="w-6 h-6"/>
@@ -190,7 +194,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                            <div className="absolute right-[-60px] sm:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
                                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                    <h3 className="font-bold text-gray-700 text-sm">Notificaciones</h3>
-                                   {unreadCount > 0 && <span className="text-xs text-green-600 font-medium">{unreadCount} nuevas</span>}
+                                   {unreadCount > 0 && <span className="text-xs text-emerald-600 font-medium">{unreadCount} nuevas</span>}
                                </div>
                                <div className="max-h-80 overflow-y-auto">
                                    {notifications.length > 0 ? (
@@ -202,7 +206,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                                    )}
                                </div>
                                <div className="p-2 text-center border-t border-gray-100">
-                                   <button className="text-xs font-semibold text-green-600 hover:underline">Ver todas</button>
+                                   <button className="text-xs font-semibold text-emerald-600 hover:underline">Ver todas</button>
                                </div>
                            </div>
                        )}
@@ -245,7 +249,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                                             </div>
                                             <button 
                                                 onClick={() => onToggleEmailNotifications(!user.emailNotificationsEnabled)}
-                                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${user.emailNotificationsEnabled ? 'bg-green-600' : 'bg-gray-200'}`}
+                                                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ${user.emailNotificationsEnabled ? 'bg-emerald-600' : 'bg-gray-200'}`}
                                             >
                                                 <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition shadow-sm ${user.emailNotificationsEnabled ? 'translate-x-5' : 'translate-x-1'}`} />
                                             </button>

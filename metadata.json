@@ -1,6 +1,6 @@
 {
-  "name": "Tubarrio - Comunidad Hiperlocal",
-  "description": "Una plataforma comunitaria hiperlocal para Antofagasta, para conectar a vecinos a través de productos, servicios y anuncios.",
+  "name": "NuestroBarrio - Comunidad Hiperlocal",
+  "description": "Una plataforma comunitaria hiperlocal para conectar a vecinos a través de productos, servicios y anuncios.",
   "requestFramePermissions": [
     "geolocation"
   ]

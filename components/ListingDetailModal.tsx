@@ -19,7 +19,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
     const [isLiked, setIsLiked] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
 
-    // Mock multiple images if only one exists (for gallery demo)
     const images = [listing.image, 'https://picsum.photos/seed/extra1/800/600', 'https://picsum.photos/seed/extra2/800/600'];
 
     const markerIcon = new L.Icon({
@@ -59,7 +58,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-0 md:p-4 animate-fade-in">
-            {/* Close Button (Mobile: Top Right inside, Desktop: Top Right outside) */}
             <button 
                 onClick={onClose} 
                 className="absolute top-4 right-4 text-white hover:text-gray-300 z-50 p-2 bg-black/20 rounded-full"
@@ -77,7 +75,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                         className="max-w-full max-h-full object-contain"
                     />
                     
-                    {/* Navigation Arrows */}
                     {images.length > 1 && (
                         <>
                             <button 
@@ -95,7 +92,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                         </>
                     )}
                     
-                    {/* Image Counter */}
                     <div className="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium">
                         {currentImageIndex + 1} / {images.length}
                     </div>
@@ -104,13 +100,12 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                 {/* Right: Details Panel */}
                 <div className="w-full md:w-[40%] bg-white flex flex-col h-full overflow-hidden">
                     
-                    {/* Scrollable Content */}
                     <div className="flex-1 overflow-y-auto p-6">
                         
                         {/* Header Info */}
                         <div className="mb-6">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm font-semibold text-green-700 bg-green-50 px-2 py-1 rounded uppercase tracking-wider">{listing.type}</span>
+                                <span className="text-sm font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded uppercase tracking-wider">{listing.type}</span>
                                 <div className="flex gap-2">
                                     <button onClick={() => setIsSaved(!isSaved)} className="text-gray-400 hover:text-gray-700">
                                         <BookmarkIcon className={`w-6 h-6 ${isSaved ? 'fill-current text-yellow-500' : ''}`} />
@@ -121,7 +116,7 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                                 </div>
                             </div>
                             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight mb-2">{listing.title}</h1>
-                            <p className="text-2xl font-bold text-gray-900">{formatPrice(listing.price)}</p>
+                            <p className="text-2xl font-bold text-emerald-600">{formatPrice(listing.price)}</p>
                         </div>
 
                         {/* Vendor / User Profile */}
@@ -130,7 +125,7 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                             <div className="flex-1">
                                 <h3 className="font-bold text-gray-900 text-sm flex items-center gap-1">
                                     {vendor.name}
-                                    {vendor.isVerified && <CheckCircleIcon className="w-4 h-4 text-blue-500" />}
+                                    {vendor.isVerified && <CheckCircleIcon className="w-4 h-4 text-emerald-500" />}
                                 </h3>
                                 <div className="flex items-center gap-1 text-xs text-gray-500">
                                     <span>{vendor.reviews} reseñas</span>
@@ -138,10 +133,10 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                                     <span>Antofagasta</span>
                                 </div>
                             </div>
-                            <button className="text-sm font-semibold text-blue-600 hover:bg-blue-50 px-3 py-1 rounded">Ver perfil</button>
+                            <button className="text-sm font-semibold text-emerald-600 hover:bg-emerald-50 px-3 py-1 rounded">Ver perfil</button>
                         </div>
 
-                        {/* Chat / Message Section (Prominent) */}
+                        {/* Chat / Message Section */}
                         <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 mb-6">
                             <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
                                 <MessageCircleIcon className="w-5 h-5" />
@@ -155,12 +150,12 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                                         onChange={(e) => setMessage(e.target.value)}
                                         placeholder={isLoggedIn ? `Hola, ¿sigue disponible?` : "Inicia sesión para enviar mensaje"}
                                         disabled={!isLoggedIn}
-                                        className="w-full pl-4 pr-12 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white disabled:bg-gray-100"
+                                        className="w-full pl-4 pr-12 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white disabled:bg-gray-100"
                                     />
                                     <button 
                                         type="submit" 
                                         disabled={!isLoggedIn || !message.trim()}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-green-600 text-white p-1.5 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:hover:bg-green-600 transition-colors"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 text-white p-1.5 rounded-md hover:bg-emerald-700 disabled:opacity-50 disabled:hover:bg-emerald-600 transition-colors"
                                     >
                                         <ArrowRightIcon className="w-4 h-4" />
                                     </button>
@@ -173,13 +168,11 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                             )}
                         </div>
 
-                        {/* Description */}
                         <div className="mb-6">
                             <h3 className="font-bold text-gray-900 mb-2">Descripción</h3>
                             <p className="text-gray-700 leading-relaxed whitespace-pre-line">{listing.description}</p>
                         </div>
 
-                        {/* Map */}
                         <div className="mb-6">
                             <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                                 <MapPinIcon className="w-5 h-5 text-gray-500" />
@@ -195,7 +188,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                             </div>
                         </div>
 
-                        {/* Safety Tips */}
                         <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-sm text-blue-800">
                             <p className="font-bold mb-1">Consejos de seguridad:</p>
                             <ul className="list-disc list-inside space-y-1 text-xs">
@@ -206,7 +198,6 @@ const ListingDetailModal: React.FC<ListingDetailModalProps> = ({ listing, vendor
                         </div>
                     </div>
 
-                    {/* Sticky Bottom Actions (Like/Share/Close on mobile mainly) */}
                     <div className="p-4 border-t border-gray-200 bg-white flex justify-between items-center shrink-0 md:hidden">
                          <button 
                             onClick={() => setIsLiked(!isLiked)}

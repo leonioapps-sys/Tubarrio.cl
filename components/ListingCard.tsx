@@ -10,7 +10,7 @@ interface PostCardProps {
     onLoginRequest?: () => void;
     onDelete?: () => void;
     isOwner?: boolean;
-    layout?: 'feed' | 'grid'; // New prop to control layout
+    layout?: 'feed' | 'grid';
 }
 
 const timeAgo = (dateString: string): string => {
@@ -33,7 +33,7 @@ const timeAgo = (dateString: string): string => {
 const ActionButton = ({ icon, label, onClick, active = false, badge }: { icon: React.ReactNode, label: string, onClick?: (e: React.MouseEvent) => void, active?: boolean, badge?: number }) => (
     <button 
         onClick={onClick}
-        className={`flex items-center gap-2 rounded-md px-3 py-2 transition-colors font-semibold text-sm sm:text-base ${active ? 'bg-green-50 text-green-600' : 'text-gray-600 hover:bg-gray-100'}`}
+        className={`flex items-center gap-2 rounded-md px-3 py-2 transition-colors font-semibold text-sm sm:text-base ${active ? 'bg-emerald-50 text-emerald-600' : 'text-gray-600 hover:bg-gray-100'}`}
     >
         {icon}
         <span>{label}</span>
@@ -57,7 +57,7 @@ const getCategoryBadgeStyle = (type: ListingType) => {
         case ListingType.Service:
             return 'bg-blue-100 text-blue-700 border-blue-200';
         case ListingType.Rental:
-            return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+            return 'bg-emerald-100 text-emerald-700 border-emerald-200';
         case ListingType.Transport:
             return 'bg-amber-100 text-amber-700 border-amber-200';
         case ListingType.LocalBusiness:
@@ -102,9 +102,7 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
 
     const handleCommentClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        // Viewing comments is allowed for everyone
         setShowComments(!showComments);
-        // Only focus if logged in
         if (!showComments && isLoggedIn) {
             setTimeout(() => inputRef.current?.focus(), 100);
         }
@@ -130,7 +128,7 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
 
         const userComment: Comment = {
             id: `u-${Date.now()}`,
-            author: 'Yo', // In a real app, this comes from auth context
+            author: 'Yo',
             content: newCommentText,
             createdAt: new Date().toISOString(),
             isVendor: false
@@ -140,7 +138,6 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
         setNewCommentText('');
         setIsReplying(true);
 
-        // Simulate Vendor Reply
         setTimeout(() => {
             const vendorReply: Comment = {
                 id: `v-${Date.now()}`,
@@ -154,7 +151,7 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
         }, 3000);
     };
 
-    // --- GRID LAYOUT (Compact) ---
+    // --- GRID LAYOUT ---
     if (layout === 'grid') {
         return (
             <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 group/card h-full flex flex-col">
@@ -181,7 +178,7 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
                 </div>
                 
                 <div className="p-3 flex flex-col flex-grow">
-                    <h3 className="font-bold text-gray-900 leading-tight mb-1 line-clamp-2 group-hover/card:text-green-700 transition-colors">
+                    <h3 className="font-bold text-gray-900 leading-tight mb-1 line-clamp-2 group-hover/card:text-emerald-600 transition-colors">
                         {listing.title}
                     </h3>
                     
@@ -197,10 +194,9 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
         );
     }
 
-    // --- FEED LAYOUT (Standard) ---
+    // --- FEED LAYOUT ---
     return (
         <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow relative group/card">
-            {/* Delete Button (Only for owner) */}
             {isOwner && (
                 <button 
                     onClick={handleDeleteClick}
@@ -229,12 +225,12 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
                     <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 whitespace-pre-line">{listing.description}</p>
                     
                     {listing.price > 0 && (
-                         <p className="font-bold text-green-600 text-lg pt-1">
+                         <p className="font-bold text-emerald-600 text-lg pt-1">
                             ${listing.price.toLocaleString('es-CL')}
                         </p>
                     )}
                     {listing.price === 0 && (
-                        <p className="font-bold text-green-600 text-lg pt-1">
+                        <p className="font-bold text-emerald-600 text-lg pt-1">
                              {listing.type === ListingType.Free ? 'GRATIS' : (listing.type === ListingType.Barter ? 'INTERCAMBIO' : (listing.type === ListingType.CitizenComplaint ? 'DENUNCIA' : 'Consultar'))}
                         </p>
                     )}
@@ -277,10 +273,10 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
                         ) : (
                             comments.map((comment) => (
                                 <div key={comment.id} className={`flex gap-2 ${comment.isVendor ? 'flex-row-reverse' : 'flex-row'}`}>
-                                    <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${comment.isVendor ? 'bg-green-100 text-gray-800 rounded-tr-none' : 'bg-white border border-gray-200 text-gray-700 rounded-tl-none shadow-sm'}`}>
+                                    <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${comment.isVendor ? 'bg-emerald-100 text-gray-800 rounded-tr-none' : 'bg-white border border-gray-200 text-gray-700 rounded-tl-none shadow-sm'}`}>
                                         <div className={`flex items-center gap-2 mb-1 ${comment.isVendor ? 'justify-end' : 'justify-start'}`}>
                                             <span className="font-bold text-xs">{comment.author}</span>
-                                            {comment.isVendor && <CheckCircleIcon className="w-3 h-3 text-green-600" />}
+                                            {comment.isVendor && <CheckCircleIcon className="w-3 h-3 text-emerald-600" />}
                                         </div>
                                         <p>{comment.content}</p>
                                     </div>
@@ -297,7 +293,6 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
                         )}
                     </div>
 
-                    {/* Input Area - Conditional Auth */}
                     {isLoggedIn ? (
                         <form onSubmit={handleSubmitComment} className="relative">
                             <input 
@@ -306,13 +301,13 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
                                 value={newCommentText}
                                 onChange={(e) => setNewCommentText(e.target.value)}
                                 placeholder={`Comenta en la publicación de ${vendor.name}...`}
-                                className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-white"
+                                className="w-full pl-4 pr-12 py-2.5 rounded-full border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-white"
                                 onClick={(e) => e.stopPropagation()}
                             />
                             <button 
                                 type="submit"
                                 disabled={!newCommentText.trim()}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-green-600 hover:bg-green-50 rounded-full disabled:text-gray-300 disabled:hover:bg-transparent transition-colors"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-full disabled:text-gray-300 disabled:hover:bg-transparent transition-colors"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

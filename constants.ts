@@ -59,7 +59,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.8,
         reviews: 124,
         isVerified: true,
-        category: 'Almacén Gourmet',
+        category: 'Regalos',
         coverImage: 'https://picsum.photos/seed/emporio_cover/800/300',
         address: 'Calle Prat 456, Centro',
         location: { lat: -23.648, lng: -70.398 },
@@ -82,7 +82,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.5,
         reviews: 88,
         isVerified: true,
-        category: 'Servicios Hogar',
+        category: 'Servicios técnicos',
         phone: '+56 9 8765 4321',
         social: {
             facebook: 'Servicios La Portada'
@@ -96,7 +96,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 5.0,
         reviews: 210,
         isVerified: false,
-        category: 'Comunidad'
+        category: 'Servicios para el Hogar y Personales'
     },
     {
         id: 4,
@@ -106,7 +106,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.9,
         reviews: 22,
         isVerified: false,
-        category: 'Ventas de Garaje'
+        category: 'Locales comerciales'
     },
     {
         id: 5,
@@ -116,7 +116,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.7,
         reviews: 45,
         isVerified: true,
-        category: 'Transporte',
+        category: 'Servicios Profesionales y Empresariales',
         phone: '+56 9 5555 4444'
     },
     {
@@ -127,7 +127,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 5.0,
         reviews: 10,
         isVerified: true,
-        category: 'Eventos'
+        category: 'Servicios de Alimentación y Eventos'
     },
      {
         id: 7,
@@ -137,7 +137,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.9,
         reviews: 34,
         isVerified: true,
-        category: 'Mascotas'
+        category: 'Servicios para el Hogar y Personales'
     },
     {
         id: 8,
@@ -147,7 +147,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.6,
         reviews: 50,
         isVerified: true,
-        category: 'Farmacia',
+        category: 'Farmacias',
         address: 'Av. Bonilla 889'
     },
     {
@@ -158,7 +158,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.8,
         reviews: 150,
         isVerified: true,
-        category: 'Panadería',
+        category: 'Servicios de Alimentación y Eventos',
         address: 'Calle Oviedo 123'
     }
 ];

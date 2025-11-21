@@ -22,7 +22,6 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
         shadowSize: [41, 41]
     });
 
-    // Logic to determine WhatsApp number
     const whatsappNumber = vendor.social?.whatsapp ? vendor.social.whatsapp.replace(/[^0-9]/g, '') : (vendor.phone ? vendor.phone.replace(/[^0-9]/g, '') : '');
     const whatsappDisplay = vendor.social?.whatsapp || vendor.phone;
 
@@ -52,7 +51,7 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
                         />
                         {vendor.isVerified && (
                             <div className="absolute bottom-1 right-1 bg-white rounded-full p-0.5 shadow-sm">
-                                <CheckCircleIcon className="w-6 h-6 text-blue-500" />
+                                <CheckCircleIcon className="w-6 h-6 text-emerald-500" />
                             </div>
                         )}
                     </div>
@@ -82,7 +81,7 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
                         {vendor.phone && (
                             <a 
                                 href={`tel:${vendor.phone}`}
-                                className="flex-1 md:flex-none px-8 py-3 bg-green-600 text-white font-bold rounded-full shadow-lg shadow-green-200 hover:bg-green-700 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                                className="flex-1 md:flex-none px-8 py-3 bg-emerald-500 text-white font-bold rounded-full shadow-lg shadow-emerald-200 hover:bg-emerald-600 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
                             >
                                 <PhoneIcon className="w-5 h-5" /> <span>Llamar</span>
                             </a>
@@ -141,12 +140,12 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
 
                     {vendor.website && (
                         <div className="flex items-center gap-3 min-w-max">
-                            <div className="w-10 h-10 rounded-full bg-white border border-gray-200 text-indigo-600 flex items-center justify-center shadow-sm">
+                            <div className="w-10 h-10 rounded-full bg-white border border-gray-200 text-emerald-600 flex items-center justify-center shadow-sm">
                                 <GlobeIcon className="w-5 h-5" />
                             </div>
                             <div>
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Web</p>
-                                <a href="#" className="font-semibold text-gray-900 hover:text-indigo-600 block max-w-[150px] truncate transition-colors">{vendor.website}</a>
+                                <a href="#" className="font-semibold text-gray-900 hover:text-emerald-600 block max-w-[150px] truncate transition-colors">{vendor.website}</a>
                             </div>
                         </div>
                     )}
@@ -164,9 +163,7 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
                     )}
                 </div>
 
-                {/* Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    {/* Left Col: Description & Gallery */}
                     <div className="lg:col-span-2 space-y-10">
                         <section>
                             <h3 className="text-xl font-bold text-gray-900 mb-4">Sobre nosotros</h3>
@@ -194,7 +191,6 @@ const BusinessDetailView: React.FC<BusinessDetailViewProps> = ({ vendor, onBack 
                         )}
                     </div>
 
-                    {/* Right Col: Map (Sticky) */}
                     <div className="lg:col-span-1">
                          <div className="sticky top-24">
                             {vendor.location && (

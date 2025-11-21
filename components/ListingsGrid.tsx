@@ -12,7 +12,6 @@ interface FeedProps {
     currentView: ViewCategory;
     onListingClick: (listing: Listing) => void;
     
-    // New props for Smart Filters
     userLocation: Coordinates | null;
     requestLocation: () => void;
     viewedListingIds: number[];
@@ -20,7 +19,6 @@ interface FeedProps {
     isLoggedIn: boolean;
     onLoginRequest: () => void;
 
-    // Deletion Props
     onDeleteListing: (id: number) => void;
     currentUserId?: string;
 }
@@ -63,9 +61,8 @@ const getEmptyStateMessage = (view: ViewCategory, activeFilter: FilterType) => {
     }
 };
 
-// Haversine formula to calculate distance in KM
 const calculateDistance = (coord1: Coordinates, coord2: Coordinates) => {
-    const R = 6371; // Radius of the earth in km
+    const R = 6371;
     const dLat = deg2rad(coord2.lat - coord1.lat);
     const dLon = deg2rad(coord2.lng - coord1.lng);
     const a =
@@ -73,7 +70,7 @@ const calculateDistance = (coord1: Coordinates, coord2: Coordinates) => {
       Math.cos(deg2rad(coord1.lat)) * Math.cos(deg2rad(coord2.lat)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+    const d = R * c;
     return d;
 };
 
@@ -99,8 +96,6 @@ const Feed: React.FC<FeedProps> = ({
 }) => {
     const [activeFilter, setActiveFilter] = useState<FilterType>('recommended');
 
-    // Determine Layout Mode
-    // 'feed' for Home, 'grid' for Marketplace, Services, etc.
     const layoutMode = currentView === 'home' ? 'feed' : 'grid';
 
     const FilterButton = ({ label, type }: { label: string, type: FilterType }) => (
@@ -128,37 +123,36 @@ const Feed: React.FC<FeedProps> = ({
         let processed = [...listings];
 
         switch (activeFilter) {
-            case 'recommended': // "Para ti" - Based on category preferences
+            case 'recommended':
                 processed = processed.sort((a, b) => {
                     const scoreA = categoryPreferences[a.type] || 0;
                     const scoreB = categoryPreferences[b.type] || 0;
-                    return scoreB - scoreA; // Higher score first
+                    return scoreB - scoreA;
                 });
                 break;
 
-            case 'recent': // "Reciente" - Based on viewed history
+            case 'recent':
                 processed = processed.filter(l => viewedListingIds.includes(l.id));
-                // Sort by index in viewedListingIds (most recent first)
                 processed.sort((a, b) => {
                     return viewedListingIds.indexOf(a.id) - viewedListingIds.indexOf(b.id);
                 });
                 break;
 
-            case 'nearby': // "Cercanos" - Based on User Location
+            case 'nearby':
                 if (userLocation) {
                     processed = processed.sort((a, b) => {
                         const distA = calculateDistance(userLocation, a.location);
                         const distB = calculateDistance(userLocation, b.location);
-                        return distA - distB; // Closest first
+                        return distA - distB;
                     });
                 }
                 break;
 
-            case 'popular': // "Populares" - Likes + Comments
+            case 'popular':
                 processed = processed.sort((a, b) => {
                     const interactionsA = (a.likes || 0) + (a.comments?.length || 0);
                     const interactionsB = (b.likes || 0) + (b.comments?.length || 0);
-                    return interactionsB - interactionsA; // Highest interactions first
+                    return interactionsB - interactionsA;
                 });
                 break;
         }
@@ -178,11 +172,10 @@ const Feed: React.FC<FeedProps> = ({
             
             {/* --- HEADER & FILTER SECTION --- */}
             {layoutMode === 'feed' ? (
-                 // HOME / FEED HEADER
                 <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 sticky top-[70px] z-20">
                     <div className="flex justify-between items-center mb-3">
                         <h2 className="text-xl font-bold text-gray-800">{getViewTitle(currentView)}</h2>
-                        <button onClick={handlePublishClick} className="sm:hidden flex items-center gap-1 text-green-600 font-semibold text-sm">
+                        <button onClick={handlePublishClick} className="sm:hidden flex items-center gap-1 text-emerald-600 font-semibold text-sm">
                             <PlusCircleIcon className="w-5 h-5" /> Publicar
                         </button>
                     </div>
@@ -202,7 +195,6 @@ const Feed: React.FC<FeedProps> = ({
                     </div>
                 </div>
             ) : (
-                // GRID VIEW HEADER (CATALOG STYLE)
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-[70px] z-20">
                      <div className="p-4 border-b border-gray-100 flex justify-between items-center">
                         <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -245,7 +237,6 @@ const Feed: React.FC<FeedProps> = ({
                         );
                     })
                 ) : (
-                     // EMPTY STATE - Needs to span full width in grid
                     <div className={`${layoutMode === 'grid' ? 'col-span-full' : ''} bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center flex flex-col items-center justify-center min-h-[300px]`}>
                         <div className="bg-gray-100 p-4 rounded-full mb-4">
                             <PlusCircleIcon className="w-10 h-10 text-gray-400" />
