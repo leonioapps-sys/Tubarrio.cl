@@ -45,6 +45,7 @@ const App: React.FC = () => {
     // Modal States
     const [isCreateBusinessOpen, setIsCreateBusinessOpen] = useState(false);
     const [isPublishing, setIsPublishing] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     
     // Navigation State (View Detail)
     const [viewingVendorId, setViewingVendorId] = useState<number | null>(null);
@@ -265,6 +266,12 @@ const App: React.FC = () => {
     // Only visible on 'home' and when NOT viewing a business detail
     const showRightSidebar = currentView === 'home' && !viewingVendorId;
 
+    const handleNavigate = (view: ViewCategory) => {
+        setCurrentView(view);
+        setViewingVendorId(null); // Reset detail view on nav change
+        setIsMobileMenuOpen(false); // Close mobile menu after selection
+    };
+
     return (
         <div className="min-h-screen bg-[#F0F2F5] text-gray-800">
             <Header 
@@ -274,53 +281,61 @@ const App: React.FC = () => {
                 onToggleEmailNotifications={handleToggleEmailNotifications}
                 onMarkNotificationsRead={handleMarkNotificationsRead}
                 onSearch={setSearchQuery} // Pass search handler
+                onLogin={handleLogin}
+                toggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             />
-            <main className={`max-w-[1200px] mx-auto grid gap-6 pt-6 px-4 transition-all duration-300 ${showRightSidebar ? 'grid-cols-[280px_minmax(0,_1fr)_300px]' : 'grid-cols-[280px_minmax(0,_1fr)]'}`}>
+            
+            {/* Main Grid: Optimized for Mobile (1 col) and Desktop (3 cols) */}
+            <main className={`max-w-[1200px] mx-auto grid gap-6 pt-6 px-4 transition-all duration-300 grid-cols-1 ${showRightSidebar ? 'lg:grid-cols-[280px_minmax(0,_1fr)_300px]' : 'lg:grid-cols-[280px_minmax(0,_1fr)]'}`}>
+                
                 <LeftSidebar 
                     onLogin={handleLogin} 
                     isLoggedIn={isLoggedIn} 
                     currentView={currentView}
-                    onNavigate={(view) => {
-                        setCurrentView(view);
-                        setViewingVendorId(null); // Reset detail view on nav change
-                    }}
-                    onPublish={() => setIsPublishing(true)}
+                    onNavigate={handleNavigate}
+                    onPublish={() => { setIsPublishing(true); setIsMobileMenuOpen(false); }}
+                    isOpen={isMobileMenuOpen} // Control visibility on mobile
+                    onClose={() => setIsMobileMenuOpen(false)}
                 />
                 
                 {/* Main Content Area: Swaps between Feed and Detail View */}
-                {viewingVendorId && viewingVendor ? (
-                    <BusinessDetailView vendor={viewingVendor} onBack={handleBackFromDetail} />
-                ) : currentView === 'local-business' ? (
-                    // New Directory View for Local Businesses
-                    <LocalBusinessDirectory 
-                         vendors={vendors}
-                         onVendorClick={handleVendorClick}
-                         searchQuery={searchQuery}
-                    />
-                ) : (
-                    <Feed 
-                        listings={filteredListings} 
-                        vendors={vendors} 
-                        getVendorById={getVendorById} 
-                        currentView={currentView}
-                        onListingClick={handleListingClick}
-                        userLocation={location}
-                        requestLocation={requestLocation}
-                        viewedListingIds={viewedListingIds}
-                        categoryPreferences={categoryPreferences}
-                        isLoggedIn={isLoggedIn}
-                        onLoginRequest={handleLogin}
-                        onDeleteListing={handleDeleteListing}
-                        currentUserId={user?.id}
-                    />
-                )}
+                <div className="min-w-0">
+                    {viewingVendorId && viewingVendor ? (
+                        <BusinessDetailView vendor={viewingVendor} onBack={handleBackFromDetail} />
+                    ) : currentView === 'local-business' ? (
+                        // New Directory View for Local Businesses
+                        <LocalBusinessDirectory 
+                             vendors={vendors}
+                             onVendorClick={handleVendorClick}
+                             searchQuery={searchQuery}
+                        />
+                    ) : (
+                        <Feed 
+                            listings={filteredListings} 
+                            vendors={vendors} 
+                            getVendorById={getVendorById} 
+                            currentView={currentView}
+                            onListingClick={handleListingClick}
+                            userLocation={location}
+                            requestLocation={requestLocation}
+                            viewedListingIds={viewedListingIds}
+                            categoryPreferences={categoryPreferences}
+                            isLoggedIn={isLoggedIn}
+                            onLoginRequest={handleLogin}
+                            onDeleteListing={handleDeleteListing}
+                            currentUserId={user?.id}
+                        />
+                    )}
+                </div>
 
                 {showRightSidebar && (
-                    <RightSidebar 
-                        listings={listings} 
-                        getVendorById={getVendorById} 
-                        onCreateBusiness={() => setIsCreateBusinessOpen(true)}
-                    />
+                    <div className="hidden lg:block">
+                        <RightSidebar 
+                            listings={listings} 
+                            getVendorById={getVendorById} 
+                            onCreateBusiness={() => setIsCreateBusinessOpen(true)}
+                        />
+                    </div>
                 )}
             </main>
 

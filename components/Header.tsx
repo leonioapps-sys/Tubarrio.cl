@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { SearchIcon, BellIcon, ChevronDownIcon, HeartIcon, MessageCircleIcon, InfoIcon, CheckCircleIcon, ChatBubbleIcon } from './Icons';
+import { SearchIcon, BellIcon, ChevronDownIcon, HeartIcon, MessageCircleIcon, InfoIcon, CheckCircleIcon, ChatBubbleIcon, GoogleIcon, MenuIcon } from './Icons';
 import { UserProfile, Notification } from '../types';
 
 interface HeaderProps {
@@ -10,6 +10,8 @@ interface HeaderProps {
     onToggleEmailNotifications: (enabled: boolean) => void;
     onMarkNotificationsRead: () => void;
     onSearch: (query: string) => void;
+    onLogin: () => void; // Added onLogin prop
+    toggleMobileMenu: () => void; // Added toggleMobileMenu prop
 }
 
 const NotificationItem: React.FC<{ notification: Notification }> = ({ notification }) => {
@@ -58,10 +60,12 @@ const NotificationItem: React.FC<{ notification: Notification }> = ({ notificati
     );
 };
 
-const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onToggleEmailNotifications, onMarkNotificationsRead, onSearch }) => {
+const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onToggleEmailNotifications, onMarkNotificationsRead, onSearch, onLogin, toggleMobileMenu }) => {
     const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
     const [isMessagesOpen, setIsMessagesOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false); // New state for mobile search
+
     const notifRef = useRef<HTMLDivElement>(null);
     const messageRef = useRef<HTMLDivElement>(null);
     const userRef = useRef<HTMLDivElement>(null);
@@ -108,21 +112,31 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
     return (
         <header className="bg-white shadow-sm z-30 sticky top-0 border-b border-gray-200 h-[60px]">
             <div className="max-w-[1200px] mx-auto px-4 h-full flex justify-between items-center">
-                {/* Left Side - Logo */}
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                    {/* New Modern Logo */}
-                    <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm">
-                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                            <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
+                {/* Left Side - Menu (Mobile) & Logo */}
+                <div className="flex items-center gap-3 cursor-pointer">
+                    {/* Mobile Menu Button */}
+                    <button 
+                        onClick={toggleMobileMenu}
+                        className="md:hidden text-gray-600 p-1 hover:bg-gray-100 rounded-md"
+                    >
+                        <MenuIcon className="w-6 h-6" />
+                    </button>
+
+                    <div className="flex items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                        {/* Logo */}
+                        <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm hidden xs:block">
+                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                        </div>
+                        <span className="text-lg md:text-xl font-bold text-gray-900 tracking-tight truncate">NuestroBarrio</span>
                     </div>
-                    <span className="text-xl font-bold text-gray-900 tracking-tight">NuestroBarrio</span>
                 </div>
                 
-                {/* Center - Search */}
-                <div className="relative w-full max-w-md hidden sm:block">
-                     <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                {/* Center - Search (Desktop) */}
+                <div className="relative w-full max-w-md hidden md:block px-4">
+                     <SearchIcon className="absolute left-7 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                      <input
                         type="text"
                         placeholder="Busca: 'ropa', 'gasfiter', 'pan'..."
@@ -132,8 +146,16 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                 </div>
                 
                 {/* Right Side - Actions */}
-                <div className="flex items-center gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                    
+                   {/* Mobile Search Toggle */}
+                   <button 
+                        className="text-gray-600 md:hidden p-1" 
+                        onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                   >
+                       <SearchIcon className="w-6 h-6"/>
+                   </button>
+
                    {/* Messages Icon */}
                    <div className="relative" ref={messageRef}>
                         <button 
@@ -147,7 +169,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
 
                          {/* Messages Dropdown */}
                          {isMessagesOpen && (
-                           <div className="absolute right-[-40px] sm:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
+                           <div className="absolute right-[-40px] md:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
                                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                    <h3 className="font-bold text-gray-700 text-sm">Chats</h3>
                                    <span className="text-xs text-emerald-600 font-medium cursor-pointer">Marcar leídos</span>
@@ -191,7 +213,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                        
                        {/* Notification Dropdown */}
                        {isNotificationsOpen && (
-                           <div className="absolute right-[-60px] sm:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
+                           <div className="absolute right-[-60px] md:right-0 top-10 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden animate-fade-in z-50">
                                <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                                    <h3 className="font-bold text-gray-700 text-sm">Notificaciones</h3>
                                    {unreadCount > 0 && <span className="text-xs text-emerald-600 font-medium">{unreadCount} nuevas</span>}
@@ -212,11 +234,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                        )}
                    </div>
 
-                    <button className="text-gray-600 hover:text-gray-900 sm:hidden" aria-label="Search">
-                        <SearchIcon className="w-6 h-6"/>
-                   </button>
-
-                    {/* User Profile */}
+                    {/* User Profile OR Login Button */}
                     {isLoggedIn && user ? (
                         <div className="relative" ref={userRef}>
                              <button 
@@ -225,7 +243,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                                 aria-label="User menu"
                             >
                                 <img src={user.photoUrl} alt={user.name} className="w-8 h-8 rounded-full object-cover border border-gray-200" />
-                                <ChevronDownIcon className="w-4 h-4 text-gray-500"/>
+                                <ChevronDownIcon className="w-4 h-4 text-gray-500 hidden md:block"/>
                             </button>
                             
                             {/* User Dropdown */}
@@ -262,10 +280,32 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
                             )}
                         </div>
                     ) : (
-                         <div className="w-8 h-8 rounded-full bg-gray-300 animate-pulse"></div>
+                         <button 
+                            onClick={onLogin}
+                            className="flex items-center gap-2 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 font-medium py-1.5 px-3 rounded-lg text-sm transition-colors whitespace-nowrap shadow-sm"
+                        >
+                            <GoogleIcon className="w-4 h-4" />
+                            <span className="hidden sm:inline">Entrar</span>
+                        </button>
                     )}
                 </div>
             </div>
+
+             {/* Mobile Search Bar Expand */}
+             {isMobileSearchOpen && (
+                <div className="md:hidden px-4 pb-3 animate-fade-in border-b border-gray-200 bg-white absolute w-full z-20">
+                    <div className="relative">
+                         <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+                         <input
+                            type="text"
+                            placeholder="¿Qué buscas en tu barrio?"
+                            autoFocus
+                            onChange={(e) => onSearch(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2 bg-gray-100 rounded-lg border-transparent focus:ring-2 focus:ring-emerald-500 text-sm"
+                         />
+                    </div>
+                </div>
+            )}
         </header>
     );
 };
