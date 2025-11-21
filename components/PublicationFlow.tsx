@@ -6,7 +6,7 @@ import { Listing, ListingType, Coordinates } from '../types';
 import { ANTOFAGASTA_COORDS } from '../constants';
 import useGeolocation from '../hooks/useGeolocation';
 import { geminiService } from '../services/geminiService';
-import { UploadCloudIcon, MapPinIcon, InfoIcon, SparklesIcon, XIcon, Loader2Icon, LocateFixedIcon } from './Icons';
+import { UploadCloudIcon, MapPinIcon, InfoIcon, SparklesIcon, XIcon, Loader2Icon, LocateFixedIcon, MegaphoneIcon } from './Icons';
 
 export const LocationPicker: React.FC<{ onLocationSet: (coords: Coordinates) => void; initialCoords?: Coordinates }> = ({ onLocationSet, initialCoords }) => {
     const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(
@@ -91,6 +91,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
         image: 'https://picsum.photos/seed/newitem/400/300', // Placeholder
     });
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -143,23 +144,46 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
     
     const prevStep = () => setStep(s => s - 1);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!formData.location) {
             setError("La ubicación es obligatoria.");
             return;
         }
-        const listingData = {
-            ...formData,
-            price: Number(formData.price)
-        };
-        onPublish(listingData);
+
+        // Content Safety Check
+        setIsValidating(true);
+        setError(null);
+        try {
+            // Call Gemini to validate content safety
+            const check = await geminiService.validateContentSafety(formData.title, formData.description);
+            
+            if (!check.isSafe) {
+                setError(`No se puede publicar este aviso: ${check.reason || 'Contenido inapropiado detectado.'}`);
+                setIsValidating(false);
+                // Go back to step 1 to let them edit if needed
+                setStep(1);
+                return;
+            }
+
+            const listingData = {
+                ...formData,
+                price: Number(formData.price)
+            };
+            onPublish(listingData);
+
+        } catch (err) {
+            setError("Error validando el contenido. Inténtalo más tarde.");
+        } finally {
+            setIsValidating(false);
+        }
     };
 
     const isPriceDisabled = formData.type === ListingType.Barter || formData.type === ListingType.Free;
+    const isComplaint = formData.type === ListingType.CitizenComplaint;
 
     return (
-        <div className="flex-grow flex items-center justify-center p-4 bg-slate-100">
-            <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-6 md:p-8 relative">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-2xl bg-white rounded-xl shadow-2xl p-6 md:p-8 relative flex flex-col max-h-[90vh] overflow-y-auto">
                 <button onClick={onCancel} className="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                     <XIcon className="w-6 h-6" />
                 </button>
@@ -167,7 +191,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                 <p className="text-center text-slate-500 mb-6">Sigue los pasos para conectar con tu comunidad.</p>
                 
                 {/* Stepper */}
-                <div className="flex justify-center items-center mb-8">
+                <div className="flex justify-center items-center mb-8 shrink-0">
                     {[1, 2, 3].map(s => (
                         <React.Fragment key={s}>
                             <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-all duration-300 ${step >= s ? 'bg-sky-500 text-white shadow-md' : 'bg-slate-200 text-slate-500'}`}>
@@ -178,11 +202,11 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                     ))}
                 </div>
 
-                {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
+                {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 shrink-0" role="alert">{error}</div>}
 
                 {/* Step 1: Info */}
                 {step === 1 && (
-                    <div className="space-y-4 animate-fade-in">
+                    <div className="space-y-4 animate-fade-in flex-grow">
                         <div className="flex items-center gap-2 text-slate-600">
                            <InfoIcon className="w-5 h-5" />
                            <h3 className="text-lg font-semibold">1. ¿Qué quieres ofrecer?</h3>
@@ -225,12 +249,22 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                                  />
                             </div>
                         </div>
+                        
+                        {isComplaint && (
+                            <div className="bg-amber-50 border border-amber-200 rounded-md p-3 flex items-start gap-3 text-amber-800 text-sm mt-2">
+                                <MegaphoneIcon className="w-5 h-5 shrink-0 mt-0.5" />
+                                <div>
+                                    <p className="font-bold">Atención:</p>
+                                    <p>Las denuncias ciudadanas deben ser aprobadas por un administrador antes de ser visibles para la comunidad.</p>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 
                 {/* Step 2: Location */}
                 {step === 2 && (
-                    <div className="space-y-4 animate-fade-in">
+                    <div className="space-y-4 animate-fade-in flex-grow">
                         <div className="flex items-center gap-2 text-slate-600">
                            <MapPinIcon className="w-5 h-5" />
                            <h3 className="text-lg font-semibold">2. ¿Dónde se encuentra?</h3>
@@ -242,7 +276,7 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
 
                 {/* Step 3: Media & Review */}
                 {step === 3 && (
-                     <div className="space-y-6 animate-fade-in">
+                     <div className="space-y-6 animate-fade-in flex-grow">
                         <div className="flex items-center gap-2 text-slate-600">
                            <UploadCloudIcon className="w-5 h-5" />
                            <h3 className="text-lg font-semibold">3. Sube una imagen y revisa</h3>
@@ -272,19 +306,31 @@ const PublicationFlow: React.FC<PublicationFlowProps> = ({ onPublish, onCancel }
                             <p className="text-slate-600"><strong>Precio:</strong> {isPriceDisabled ? 'Gratis/Intercambio' : `$${formData.price}`}</p>
                             <p className="text-slate-600"><strong>Ubicación:</strong> {formData.location ? 'Establecida' : 'No establecida'}</p>
                         </div>
+                         {isComplaint && (
+                             <div className="text-xs text-amber-600 font-semibold text-center">
+                                 * Al publicar, tu denuncia pasará a revisión por los administradores.
+                             </div>
+                         )}
                     </div>
                 )}
 
 
                 {/* Navigation */}
-                <div className="flex justify-between mt-8">
+                <div className="flex justify-between mt-8 shrink-0">
                     {step > 1 ? (
                         <button onClick={prevStep} className="bg-slate-200 text-slate-800 font-bold py-2 px-6 rounded-lg hover:bg-slate-300 transition-colors">Anterior</button>
                     ) : <div></div>}
                     {step < 3 ? (
                         <button onClick={nextStep} className="bg-sky-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-sky-600 transition-colors shadow-md">Siguiente</button>
                     ) : (
-                        <button onClick={handleSubmit} className="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition-colors shadow-md">Publicar Anuncio</button>
+                        <button 
+                            onClick={handleSubmit} 
+                            disabled={isValidating}
+                            className="bg-teal-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-teal-600 transition-colors shadow-md flex items-center gap-2"
+                        >
+                            {isValidating && <Loader2Icon className="w-4 h-4 animate-spin" />}
+                            {isValidating ? 'Analizando...' : (isComplaint ? 'Enviar a Revisión' : 'Publicar Anuncio')}
+                        </button>
                     )}
                 </div>
             </div>

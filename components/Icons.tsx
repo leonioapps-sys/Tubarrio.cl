@@ -41,6 +41,13 @@ export const HeartIcon: React.FC<IconProps> = (props) => (
     </svg>
 );
 
+export const HeartPulseIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+        <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+    </svg>
+);
+
 export const ShareIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line>
@@ -78,9 +85,26 @@ export const ArrowLeftIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
 );
 
+export const ArrowRightIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+);
+
 export const MessageCircleIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"></path></svg>
 );
+
+export const ChatBubbleIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+);
+
+export const BookmarkIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+    </svg>
+);
+
 
 export const SearchIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -204,8 +228,8 @@ export const CameraIcon: React.FC<IconProps> = (props) => (
 
 export const WhatsAppIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <path d="M21.4 8.8c-.4-1.6-1.2-3-2.2-4.2C18 3.4 16.6 2.6 15.1 2.2c-1.5-.4-3.1-.4-4.6-.1-1.5.3-3 1-4.3 2-1.3 1-2.3 2.3-3 3.7-.7 1.4-1.1 3-1.1 4.6 0 .8.1 1.6.3 2.4.2.8.5 1.5.9 2.2l-1.3 4.8 4.9-1.3c1.4.8 3 1.2 4.6 1.2 1.6 0 3.2-.4 4.6-1.2 1.3-.8 2.4-1.9 3.3-3.2.9-1.3 1.4-2.8 1.6-4.4.2-1.6-.1-3.2-.6-4.7z" />
-        <path d="M16.6 14.9c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.7.8-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1.2-.2.3-.4.1-.1.2-.2.3-.4.1-.2 0-.3-.1-.4-.1-.1-.5-1.1-.6-1.5-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.5c.1.3 1.6 2.5 3.9 3.5 2.3 1 2.3.7 2.7.6.4-.1 1.2-.5 1.4-1 .2-.4.2-.8.1-.9-.2-.1-.4-.2-.6-.3z" />
+        <path d="M21.4 8.8c-.4-1.6-1.2-3-2.2-4.2C18 3.4 16.6 2.6 15.1 2.2c-1.5-.4-3.1-.4-4.6-.1-1.5.3-3 1-4.3 2-1.3 1-2.3 3-3.7-.7 1.4-1.1 3-1.1 4.6 0 .8.1 1.6.3 2.4.2.8.5 1.5.9 2.2l-1.3 4.8 4.9-1.3c1.4.8 3 1.2 4.6 1.2 1.6 0 3.2-.4 4.6-1.2 1.3-.8 2.4-1.9 3.3-3.2.9-1.3 1.4-2.8 1.6-4.4.2-1.6-.1-3.2-.6-4.7z" />
+        <path d="M16.6 14.9c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1-.1.2-.5.7-.7.8-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.4.1-.2 0-.3-.1-.4-.1-.1-.5-1.1-.6-1.5-.2-.4-.4-.3-.5-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.5c.1.3 1.6 2.5 3.9 3.5 2.3 1 2.3.7 2.7.6.4-.1 1.2-.5 1.4-1 .2-.4.2-.8.1-.9-.2-.1-.4-.2-.6-.3z" />
     </svg>
 );
 
@@ -223,5 +247,17 @@ export const PawIcon: React.FC<IconProps> = (props) => (
         <path d="M21.7 8.9c0 1.1-.9 2.1-2.1 2.1h-.4c-1.1 0-2.1-.9-2.1-2.1v-.4c0-1.1.9-2.1 2.1-2.1h.4c1.1 0 2.1.9 2.1 2.1v.4z"></path>
         <path d="M6.9 8.5h.4c1.1 0 2.1.9 2.1 2.1v.4c0 1.1-.9 2.1-2.1 2.1h-.4c-1.1 0-2.1-.9-2.1-2.1v-.4c0-1.1.9-2.1 2.1-2.1z"></path>
         <path d="M17.4 13c.3-1.5-1.6-2.9-3.6-2.5-1.3.3-1.6 1.4-1.8 2.2-.2-.7-.5-1.9-1.8-2.2-2-.4-3.9 1-3.6 2.5.4 1.8 1.4 5.5 5.4 5.5s5-3.7 5.4-5.5z"></path>
+    </svg>
+);
+
+export const BriefcaseIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+    </svg>
+);
+
+export const ClockIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+        <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
     </svg>
 );

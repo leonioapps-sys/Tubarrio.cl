@@ -1,6 +1,8 @@
 
 export enum ListingType {
     Product = 'Producto',
+    HealthBeauty = 'Salud y belleza',
+    Job = 'Empleos o trabajos',
     Service = 'Servicio',
     Barter = 'Trueque',
     GarageSale = 'Venta de Bodega',
@@ -13,7 +15,7 @@ export enum ListingType {
     Pet = 'Para tu mascota',
 }
 
-export type ViewCategory = 'home' | 'marketplace' | 'services' | 'pets' | 'rentals' | 'transport' | 'local-business' | 'events' | 'complaints';
+export type ViewCategory = 'home' | 'marketplace' | 'health-beauty' | 'jobs' | 'services' | 'pets' | 'rentals' | 'transport' | 'local-business' | 'events' | 'complaints';
 
 export interface Coordinates {
     lat: number;
@@ -25,12 +27,13 @@ export interface Comment {
     author: string;
     content: string;
     createdAt: string;
-    isVendor: boolean; // True if the comment is from the business owner
+    isVendor: boolean; // True if the business owner
 }
 
 export interface Listing {
     id: number;
     vendorId: number;
+    userId?: string; // ID of the user who posted this
     title: string;
     description: string;
     type: ListingType;
@@ -39,7 +42,7 @@ export interface Listing {
     price: number; // 0 for barter/free
     likes?: number;
     createdAt: string; // ISO 8601 date string
-    status: 'active' | 'closed';
+    status: 'active' | 'closed' | 'pending';
     comments?: Comment[];
 }
 
@@ -52,6 +55,7 @@ export interface Vendor {
     reviews: number;
     isVerified: boolean;
     // Extended fields for Business Profile
+    category?: string; // Added category field for Directory
     coverImage?: string;
     gallery?: string[];
     address?: string;

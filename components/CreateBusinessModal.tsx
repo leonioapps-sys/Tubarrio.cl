@@ -15,6 +15,7 @@ const CreateBusinessModal: React.FC<CreateBusinessModalProps> = ({ onClose, onCr
     const [formData, setFormData] = useState({
         name: '',
         description: '',
+        category: 'Otros',
         phone: '',
         address: '',
         instagram: '',
@@ -26,7 +27,7 @@ const CreateBusinessModal: React.FC<CreateBusinessModalProps> = ({ onClose, onCr
         gallery: [] as string[],
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
@@ -54,6 +55,7 @@ const CreateBusinessModal: React.FC<CreateBusinessModalProps> = ({ onClose, onCr
                 id: Math.random(), // Temporary ID
                 name: formData.name,
                 description: formData.description,
+                category: formData.category,
                 logo: formData.logo,
                 rating: 5.0,
                 reviews: 0,
@@ -124,14 +126,28 @@ const CreateBusinessModal: React.FC<CreateBusinessModalProps> = ({ onClose, onCr
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Negocio</label>
                                     <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="Ej: Panadería La Estrella" />
                                 </div>
+                                <div className="col-span-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
+                                    <select name="category" value={formData.category} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                        <option value="Almacén Gourmet">Almacén Gourmet</option>
+                                        <option value="Servicios Hogar">Servicios Hogar</option>
+                                        <option value="Comida Rápida">Comida Rápida</option>
+                                        <option value="Panadería">Panadería</option>
+                                        <option value="Farmacia">Farmacia</option>
+                                        <option value="Mascotas">Mascotas</option>
+                                        <option value="Ropa y Accesorios">Ropa y Accesorios</option>
+                                        <option value="Otros">Otros</option>
+                                    </select>
+                                </div>
+                                <div className="col-span-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp</label>
+                                    <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="+56 9 ..." />
+                                </div>
                                 <div className="col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Descripción completa</label>
                                     <textarea name="description" rows={3} value={formData.description} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="Cuenta la historia de tu negocio, productos principales, horarios..." />
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp</label>
-                                    <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500" placeholder="+56 9 ..." />
-                                </div>
+                                
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Sitio Web (Opcional)</label>
                                     <input type="text" name="website" value={formData.website} onChange={handleInputChange} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500" />

@@ -59,6 +59,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.8,
         reviews: 124,
         isVerified: true,
+        category: 'Almacén Gourmet',
         coverImage: 'https://picsum.photos/seed/emporio_cover/800/300',
         address: 'Calle Prat 456, Centro',
         location: { lat: -23.648, lng: -70.398 },
@@ -81,6 +82,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.5,
         reviews: 88,
         isVerified: true,
+        category: 'Servicios Hogar',
         phone: '+56 9 8765 4321',
         social: {
             facebook: 'Servicios La Portada'
@@ -94,6 +96,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 5.0,
         reviews: 210,
         isVerified: false,
+        category: 'Comunidad'
     },
     {
         id: 4,
@@ -103,6 +106,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.9,
         reviews: 22,
         isVerified: false,
+        category: 'Ventas de Garaje'
     },
     {
         id: 5,
@@ -112,6 +116,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.7,
         reviews: 45,
         isVerified: true,
+        category: 'Transporte',
         phone: '+56 9 5555 4444'
     },
     {
@@ -122,6 +127,7 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 5.0,
         reviews: 10,
         isVerified: true,
+        category: 'Eventos'
     },
      {
         id: 7,
@@ -131,6 +137,29 @@ export const MOCK_VENDORS: Vendor[] = [
         rating: 4.9,
         reviews: 34,
         isVerified: true,
+        category: 'Mascotas'
+    },
+    {
+        id: 8,
+        name: 'Farmacia Vecinal Norte',
+        logo: 'https://picsum.photos/seed/pharma/100/100',
+        description: 'Medicamentos e insumos médicos a precios justos.',
+        rating: 4.6,
+        reviews: 50,
+        isVerified: true,
+        category: 'Farmacia',
+        address: 'Av. Bonilla 889'
+    },
+    {
+        id: 9,
+        name: 'Panadería La Marraqueta',
+        logo: 'https://picsum.photos/seed/bread/100/100',
+        description: 'Pan caliente mañana y tarde. Pasteles y empanadas.',
+        rating: 4.8,
+        reviews: 150,
+        isVerified: true,
+        category: 'Panadería',
+        address: 'Calle Oviedo 123'
     }
 ];
 
@@ -355,5 +384,18 @@ export const MOCK_LISTINGS: Listing[] = [
         createdAt: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         status: 'active',
         likes: 10,
+    },
+    {
+        id: 16,
+        vendorId: 2,
+        title: 'Se necesita Ayudante de Cocina',
+        description: 'Restaurante del centro busca ayudante de cocina con experiencia comprobable. Turnos rotativos.',
+        type: ListingType.Job,
+        location: { lat: -23.648, lng: -70.398 },
+        image: 'https://picsum.photos/seed/cocina/400/300',
+        price: 550000,
+        createdAt: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
+        status: 'active',
+        likes: 15,
     }
 ];

@@ -1,13 +1,16 @@
 
 import React, { useState, useRef } from 'react';
 import { Listing, Vendor, ListingType, Comment } from '../types';
-import { HeartIcon, MessageCircleIcon, ShareIcon, CheckCircleIcon, Loader2Icon, GoogleIcon } from './Icons';
+import { HeartIcon, MessageCircleIcon, ShareIcon, CheckCircleIcon, Loader2Icon, GoogleIcon, TrashIcon, MapPinIcon, ClockIcon } from './Icons';
 
 interface PostCardProps {
     listing: Listing;
     vendor: Vendor;
     isLoggedIn?: boolean;
     onLoginRequest?: () => void;
+    onDelete?: () => void;
+    isOwner?: boolean;
+    layout?: 'feed' | 'grid'; // New prop to control layout
 }
 
 const timeAgo = (dateString: string): string => {
@@ -17,14 +20,14 @@ const timeAgo = (dateString: string): string => {
     let interval = seconds / 31536000;
     if (interval > 1) return `hace ${Math.floor(interval)} años`;
     interval = seconds / 2592000;
-    if (interval > 1) return `hace ${Math.floor(interval)} meses`;
+    if (interval > 1) return `hace ${Math.floor(interval)} m`;
     interval = seconds / 86400;
-    if (interval > 1) return `hace ${Math.floor(interval)} días`;
+    if (interval > 1) return `hace ${Math.floor(interval)} d`;
     interval = seconds / 3600;
-    if (interval > 1) return `hace ${Math.floor(interval)} horas`;
+    if (interval > 1) return `hace ${Math.floor(interval)} h`;
     interval = seconds / 60;
-    if (interval > 1) return `hace ${Math.floor(interval)} minutos`;
-    return `hace ${Math.floor(seconds)} segundos`;
+    if (interval > 1) return `hace ${Math.floor(interval)} min`;
+    return `hace ${Math.floor(seconds)} s`;
 };
 
 const ActionButton = ({ icon, label, onClick, active = false, badge }: { icon: React.ReactNode, label: string, onClick?: (e: React.MouseEvent) => void, active?: boolean, badge?: number }) => (
@@ -47,6 +50,10 @@ const getCategoryBadgeStyle = (type: ListingType) => {
         case ListingType.GarageSale:
         case ListingType.Free:
             return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+        case ListingType.HealthBeauty:
+            return 'bg-pink-100 text-pink-700 border-pink-200';
+        case ListingType.Job:
+            return 'bg-cyan-100 text-cyan-700 border-cyan-200';
         case ListingType.Service:
             return 'bg-blue-100 text-blue-700 border-blue-200';
         case ListingType.Rental:
@@ -66,7 +73,7 @@ const getCategoryBadgeStyle = (type: ListingType) => {
     }
 };
 
-const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false, onLoginRequest }) => {
+const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false, onLoginRequest, onDelete, isOwner = false, layout = 'feed' }) => {
     const badgeStyle = getCategoryBadgeStyle(listing.type);
     const [showComments, setShowComments] = useState(false);
     const [comments, setComments] = useState<Comment[]>(listing.comments || []);
@@ -100,6 +107,13 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
         // Only focus if logged in
         if (!showComments && isLoggedIn) {
             setTimeout(() => inputRef.current?.focus(), 100);
+        }
+    };
+    
+    const handleDeleteClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm("¿Estás seguro de que quieres eliminar este aviso?")) {
+            if (onDelete) onDelete();
         }
     };
 
@@ -140,10 +154,65 @@ const PostCard: React.FC<PostCardProps> = ({ listing, vendor, isLoggedIn = false
         }, 3000);
     };
 
+    // --- GRID LAYOUT (Compact) ---
+    if (layout === 'grid') {
+        return (
+            <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300 group/card h-full flex flex-col">
+                <div className="relative aspect-square bg-gray-100 overflow-hidden">
+                    <img 
+                        src={listing.image} 
+                        alt={listing.title} 
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105" 
+                        loading="lazy" 
+                    />
+                    {isOwner && (
+                        <button 
+                            onClick={handleDeleteClick}
+                            className="absolute top-2 right-2 z-20 bg-white/90 text-red-500 p-1.5 rounded-full shadow-sm hover:bg-red-50"
+                        >
+                            <TrashIcon className="w-3 h-3" />
+                        </button>
+                    )}
+                    <div className="absolute bottom-2 left-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border shadow-sm bg-white/95 text-gray-800`}>
+                            {listing.price > 0 ? `$${listing.price.toLocaleString('es-CL')}` : (listing.type === ListingType.Free ? 'GRATIS' : 'Consultar')}
+                        </span>
+                    </div>
+                </div>
+                
+                <div className="p-3 flex flex-col flex-grow">
+                    <h3 className="font-bold text-gray-900 leading-tight mb-1 line-clamp-2 group-hover/card:text-green-700 transition-colors">
+                        {listing.title}
+                    </h3>
+                    
+                    <div className="mt-auto pt-2 flex items-center justify-between text-xs text-gray-500">
+                         <div className="flex items-center gap-1 truncate max-w-[70%]">
+                            <img src={vendor.logo} className="w-4 h-4 rounded-full" alt="" />
+                            <span className="truncate">{vendor.name}</span>
+                         </div>
+                         <span className="whitespace-nowrap">{timeAgo(listing.createdAt)}</span>
+                    </div>
+                </div>
+            </article>
+        );
+    }
+
+    // --- FEED LAYOUT (Standard) ---
     return (
-        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+        <article className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow relative group/card">
+            {/* Delete Button (Only for owner) */}
+            {isOwner && (
+                <button 
+                    onClick={handleDeleteClick}
+                    className="absolute top-2 right-2 z-20 bg-white/90 text-red-500 p-1.5 rounded-full shadow-sm hover:bg-red-50 transition-colors border border-gray-100"
+                    title="Eliminar aviso"
+                >
+                    <TrashIcon className="w-4 h-4" />
+                </button>
+            )}
+
             <div className="p-4">
-                <div className="flex items-start justify-between mb-3 gap-2">
+                <div className="flex items-start justify-between mb-3 gap-2 pr-6">
                     <div className="flex items-center gap-3">
                         <img src={vendor.logo} alt={vendor.name} className="w-10 h-10 rounded-full object-cover border border-gray-100" />
                         <div>
