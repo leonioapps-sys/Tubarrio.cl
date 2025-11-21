@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { SearchIcon, BellIcon, ChevronDownIcon, HeartIcon, MessageCircleIcon, InfoIcon, CheckCircleIcon, ChatBubbleIcon, GoogleIcon, MenuIcon } from './Icons';
 import { UserProfile, Notification } from '../types';
@@ -124,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({ isLoggedIn, user, notifications, onTogg
 
                     <div className="flex items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                         {/* Logo */}
-                        <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm hidden xs:block">
+                        <div className="bg-emerald-500 text-white p-1.5 rounded-lg shadow-sm block">
                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>

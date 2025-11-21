@@ -78,6 +78,34 @@ const deg2rad = (deg: number) => {
   return deg * (Math.PI / 180)
 };
 
+const FilterSelect = ({ 
+    value, 
+    onChange, 
+    options, 
+    disabled = false
+}: { 
+    value: string | number, 
+    onChange: (val: string) => void, 
+    options: { label: string, value: string | number }[],
+    disabled?: boolean
+}) => (
+    <div className="relative">
+        <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={disabled}
+            className={`appearance-none pl-4 pr-9 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        >
+            {options.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+        </select>
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
+            <ChevronDownIcon className="w-4 h-4" />
+        </div>
+    </div>
+);
+
 
 const Feed: React.FC<FeedProps> = ({ 
     listings, 
@@ -94,7 +122,13 @@ const Feed: React.FC<FeedProps> = ({
     onDeleteListing,
     currentUserId
 }) => {
+    // Feed Mode State
     const [activeFilter, setActiveFilter] = useState<FilterType>('recommended');
+
+    // Grid Mode States
+    const [priceFilter, setPriceFilter] = useState<'none' | 'asc' | 'desc'>('none');
+    const [distanceFilter, setDistanceFilter] = useState<number>(10);
+    const [relevanceFilter, setRelevanceFilter] = useState<'most' | 'least'>('most');
 
     const layoutMode = currentView === 'home' ? 'feed' : 'grid';
 
@@ -112,52 +146,74 @@ const Feed: React.FC<FeedProps> = ({
         </button>
     );
 
-    const DropdownFilter = ({ label }: { label: string }) => (
-        <button className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium flex items-center gap-2 hover:bg-gray-50 transition-colors">
-            {label}
-            <ChevronDownIcon className="w-4 h-4 text-gray-400" />
-        </button>
-    );
-
     const sortedListings = useMemo(() => {
         let processed = [...listings];
 
-        switch (activeFilter) {
-            case 'recommended':
-                processed = processed.sort((a, b) => {
-                    const scoreA = categoryPreferences[a.type] || 0;
-                    const scoreB = categoryPreferences[b.type] || 0;
-                    return scoreB - scoreA;
-                });
-                break;
-
-            case 'recent':
-                processed = processed.filter(l => viewedListingIds.includes(l.id));
-                processed.sort((a, b) => {
-                    return viewedListingIds.indexOf(a.id) - viewedListingIds.indexOf(b.id);
-                });
-                break;
-
-            case 'nearby':
-                if (userLocation) {
+        if (layoutMode === 'feed') {
+            // FEED LOGIC
+            switch (activeFilter) {
+                case 'recommended':
                     processed = processed.sort((a, b) => {
-                        const distA = calculateDistance(userLocation, a.location);
-                        const distB = calculateDistance(userLocation, b.location);
-                        return distA - distB;
+                        const scoreA = categoryPreferences[a.type] || 0;
+                        const scoreB = categoryPreferences[b.type] || 0;
+                        return scoreB - scoreA;
                     });
-                }
-                break;
+                    break;
 
-            case 'popular':
-                processed = processed.sort((a, b) => {
-                    const interactionsA = (a.likes || 0) + (a.comments?.length || 0);
-                    const interactionsB = (b.likes || 0) + (b.comments?.length || 0);
-                    return interactionsB - interactionsA;
+                case 'recent':
+                    processed = processed.filter(l => viewedListingIds.includes(l.id));
+                    processed.sort((a, b) => {
+                        return viewedListingIds.indexOf(a.id) - viewedListingIds.indexOf(b.id);
+                    });
+                    break;
+
+                case 'nearby':
+                    if (userLocation) {
+                        processed = processed.sort((a, b) => {
+                            const distA = calculateDistance(userLocation, a.location);
+                            const distB = calculateDistance(userLocation, b.location);
+                            return distA - distB;
+                        });
+                    }
+                    break;
+
+                case 'popular':
+                    processed = processed.sort((a, b) => {
+                        const interactionsA = (a.likes || 0) + (a.comments?.length || 0);
+                        const interactionsB = (b.likes || 0) + (b.comments?.length || 0);
+                        return interactionsB - interactionsA;
+                    });
+                    break;
+            }
+        } else {
+            // GRID LOGIC
+            
+            // 1. Distance Filter (Only if location is available)
+            if (userLocation) {
+                 processed = processed.filter(l => {
+                     const dist = calculateDistance(userLocation, l.location);
+                     return dist <= distanceFilter;
+                 });
+            }
+
+            // 2. Sorting
+            // Priority: Price > Relevance (Engagement)
+            if (priceFilter !== 'none') {
+                processed.sort((a, b) => {
+                    if (priceFilter === 'asc') return a.price - b.price;
+                    return b.price - a.price;
                 });
-                break;
+            } else {
+                // Relevance sorting (using likes + comments as proxy)
+                processed.sort((a, b) => {
+                    const scoreA = (a.likes || 0) + (a.comments?.length || 0);
+                    const scoreB = (b.likes || 0) + (b.comments?.length || 0);
+                    return relevanceFilter === 'most' ? scoreB - scoreA : scoreA - scoreB;
+                });
+            }
         }
         return processed;
-    }, [listings, activeFilter, viewedListingIds, categoryPreferences, userLocation]);
+    }, [listings, activeFilter, viewedListingIds, categoryPreferences, userLocation, layoutMode, priceFilter, distanceFilter, relevanceFilter]);
 
     const handlePublishClick = () => {
         if (!isLoggedIn) {
@@ -202,11 +258,47 @@ const Feed: React.FC<FeedProps> = ({
                         </h2>
                         <span className="text-xs text-gray-500 font-medium">{sortedListings.length} resultados</span>
                      </div>
-                     <div className="p-3 bg-gray-50 flex gap-2 overflow-x-auto scrollbar-hide">
-                         <DropdownFilter label="Categorías" />
-                         <DropdownFilter label="Precio" />
-                         <DropdownFilter label="Distancia: 10 km" />
-                         <DropdownFilter label="Ordenar por: Más relevantes" />
+                     <div className="p-3 bg-gray-50 flex gap-2 overflow-x-auto scrollbar-hide items-center">
+                         
+                         {/* Price Filter */}
+                         <FilterSelect 
+                             value={priceFilter} 
+                             onChange={(val) => setPriceFilter(val as 'none' | 'asc' | 'desc')} 
+                             options={[
+                                 { label: 'Precio: Todos', value: 'none' },
+                                 { label: 'Precio: Menor a mayor', value: 'asc' },
+                                 { label: 'Precio: Mayor a menor', value: 'desc' }
+                             ]}
+                         />
+
+                         {/* Distance Filter */}
+                         {userLocation ? (
+                             <FilterSelect 
+                                 value={distanceFilter}
+                                 onChange={(val) => setDistanceFilter(Number(val))}
+                                 options={Array.from({length: 10}, (_, i) => i + 1).map(km => ({
+                                     label: `Distancia: ${km} km`,
+                                     value: km
+                                 }))}
+                             />
+                         ) : (
+                             <button 
+                                onClick={requestLocation}
+                                className="px-3 py-2 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium hover:bg-emerald-100 transition-colors flex items-center gap-1 whitespace-nowrap"
+                             >
+                                 <MapPinIcon className="w-4 h-4" /> Activar ubicación
+                             </button>
+                         )}
+
+                         {/* Relevance Sort */}
+                         <FilterSelect 
+                             value={relevanceFilter}
+                             onChange={(val) => setRelevanceFilter(val as 'most' | 'least')}
+                             options={[
+                                 { label: 'Ordenar por: Más relevantes', value: 'most' },
+                                 { label: 'Ordenar por: Menos relevantes', value: 'least' }
+                             ]}
+                         />
                      </div>
                 </div>
             )}
@@ -243,6 +335,11 @@ const Feed: React.FC<FeedProps> = ({
                         </div>
                         <p className="text-gray-600 text-lg font-medium">{getEmptyStateMessage(currentView, activeFilter)}</p>
                         {activeFilter === 'recent' && <p className="text-gray-400 text-sm mt-2">Tu historial de navegación aparecerá aquí.</p>}
+                        {layoutMode === 'grid' && userLocation && distanceFilter < 10 && (
+                             <button onClick={() => setDistanceFilter(10)} className="mt-4 text-emerald-600 hover:underline text-sm">
+                                 Ampliar radio de búsqueda
+                             </button>
+                        )}
                     </div>
                 )}
             </div>

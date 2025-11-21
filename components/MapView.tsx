@@ -19,7 +19,7 @@ const NavItem = ({ icon, label, isActive, onClick }: { icon: React.ReactNode, la
             onClick={onClick}
             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-base font-semibold transition-colors text-left ${isActive ? 'bg-emerald-50 text-emerald-700' : 'text-gray-700 hover:bg-gray-100'}`}
         >
-            {React.cloneElement(icon as React.ReactElement, { className: `w-6 h-6 ${isActive ? 'text-emerald-600' : 'text-gray-500'}` })}
+            {React.cloneElement(icon as React.ReactElement<{ className?: string }>, { className: `w-6 h-6 ${isActive ? 'text-emerald-600' : 'text-gray-500'}` })}
             <span>{label}</span>
         </button>
     </li>
